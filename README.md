@@ -148,3 +148,86 @@ plt.show()
 [('Detalles', 484), ('Experiencia', 446), ('meses', 376), ('empresa', 330), ('descripción', 310), ('1', 290), ( 'año', 232), ('Enero', 216), ('Menos', 204), ('Datos', 200), ('datos', 192), ('Habilidad', 166), ('Maharashtra ', 166), ('6', 164), ('Python', 156), ('Science', 154), ('I', 146), ('Education', 142), ('College', 140), ('The', 126), ('project', 126), ('like', 126), ('Project', 124), ('Learning', 116), ('India', 114) , ('Máquina', 112), ('Universidad', 112), ('Web', 106), ('usando', 104), ('monthsCompany', 102), ('B', 98), ( 'C', 98), ('SQL', 96), ('tiempo', 92), ('aprendizaje', 90),('Mumbai', 90), ('Pune', 90), ('Artes', 90), ('A', 84), ('aplicación', 84), ('Ingeniería', 78), (' 24', 76), ('varios', 76), ('Software', 76), ('Responsabilidades', 76), ('Nagpur', 76), ('desarrollo', 74), ('Gestión' , 74), ('proyectos', 74), ('Tecnologías', 72)]
 ```
 ![Screening](https://github.com/javierma73/Screening-with-Python/blob/main/resume-screening-word.png)
+### Ahora convertiré estas palabras en valores categóricos:
+```
+from sklearn.preprocessing import LabelEncoder
+
+var_mod = ['Category']
+le = LabelEncoder()
+for i in var_mod:
+    resumeDataSet[i] = le.fit_transform(resumeDataSet[i])
+```
+## Capacitación del modelo de aprendizaje automático para la selección de currículums
+###### Ahora, el siguiente paso en el proceso es entrenar un modelo para la tarea de evaluación de currículums. Aquí usaré el clasificador uno contra el resto; KNeighborsClassifier. Para esta tarea, primero dividiré los datos en conjuntos de entrenamiento y prueba:
+```
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.sparse import hstack
+
+requiredText = resumeDataSet['cleaned_resume'].values
+requiredTarget = resumeDataSet['Category'].values
+
+word_vectorizer = TfidfVectorizer(
+    sublinear_tf=True,
+    stop_words='english',
+    max_features=1500)
+word_vectorizer.fit(requiredText)
+WordFeatures = word_vectorizer.transform(requiredText)
+
+print ("Feature completed .....")
+
+X_train,X_test,y_train,y_test = train_test_split(WordFeatures,requiredTarget,random_state=0, test_size=0.2)
+print(X_train.shape)
+print(X_test.shape)
+```
+## Ahora entrenemos el modelo e imprimamos el informe de clasificación:
+```
+clf = OneVsRestClassifier(KNeighborsClassifier())
+clf.fit(X_train, y_train)
+prediction = clf.predict(X_test)
+print('Accuracy of KNeighbors Classifier on training set: {:.2f}'.format(clf.score(X_train, y_train)))
+print('Accuracy of KNeighbors Classifier on test set: {:.2f}'.format(clf.score(X_test, y_test)))
+
+print("\n Classification report for classifier %s:\n%s\n" % (clf, metrics.classification_report(y_test, prediction)))
+```
+Precisión de KNeighbors Classifier en el conjunto de entrenamiento: 0,99 
+Precisión de KNeighbors Classifier en el conjunto de prueba: 0,99 
+
+ Informe de clasificación para el clasificador OneVsRestClassifier(estimator=KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski', 
+           metric_params=Ninguno, n_jobs= Ninguno, n_vecinos=5, p=2, 
+           pesos='uniforme'), 
+          n_trabajos=Ninguno): 
+              recuperación de precisión compatibilidad con puntaje f1 
+
+           0 1,00 1,00 1,00 3 
+           1 1,00 1,00 1,00 3 
+           2 1,00 0,80 0,89 5 
+           3 1,00 1,00 1,00 9 
+           4 1,00 1,00 1,00 6
+           5 0.83 1.00 0.91 5 
+           6 1.00 1.00 1.00 9 
+           7 1.00 1.00 1.00 7 
+           8 1.00 0.91 0.95 11 
+           9 1.00 1.00 1.00 9 
+          10 1.00 1.00 1.00 8 11 
+          0.90 1.00 0.95 9 
+          12 1.00 1.00 5 
+          13 1.00 1.00 1.00 9 
+          14 1.00 1.00 7 7 
+          15 1,00 1,00 1,00 19 
+          16 1,00 1,00 1,00 3
+          17 1.00 1.00 1.00 4 
+          18 1.00 1.00 1.00 5 
+          19 1.00 1.00 1.00 6 20 1.00 1.00 1.00 
+          11 21 1.00 1.00 1.00 
+          4 
+          22 1.00 1.00 1.00 1.00 1.00 1.00 15 
+          24 
+          1.00 1.00 1.00 8 
+
+   Micro AVG 0.99 0.99 0.99 193 
+   Macro AVG 0.99 0.99 0,99 193 
+promedio ponderado 0,99 0,99 0,99 193
+
+---
+### Así es como podemos entrenar un modelo de Machine Learning para la tarea de Resume Screening. Espero que te haya gustado este artículo sobre Resume Screening con el lenguaje de programación Python. Siéntase libre de hacer sus valiosas preguntas en la sección de comentarios a continuación.
