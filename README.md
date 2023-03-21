@@ -24,7 +24,7 @@ resumeDataSet = pd.read_csv('UpdatedResumeDataSet.csv' ,encoding='utf-8')
 resumeDataSet['cleaned_resume'] = ''
 resumeDataSet.head()
 ```
-Category ![Category](https://github.com/javierma73/Screening-with-Python/blob/main/resume-2.JPG)
+Category ![Category](https://github.com/javierma73/Screening-with-Python/blob/main/Category.png)
 
 Ahora echemos un vistazo rápido a las categorías de currículos presentes en el conjunto de datos:
 ```
