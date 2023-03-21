@@ -24,6 +24,8 @@ resumeDataSet = pd.read_csv('UpdatedResumeDataSet.csv' ,encoding='utf-8')
 resumeDataSet['cleaned_resume'] = ''
 resumeDataSet.head()
 ```
+Category ![Category](https://github.com/javierma73/Screening-with-Python/blob/main/resume-2.JPG)
+
 Ahora echemos un vistazo rápido a las categorías de currículos presentes en el conjunto de datos:
 ```
 print ("Displaying the distinct categories of resume -")
@@ -70,4 +72,11 @@ Civil Engineer               24
 Advocate                     20
 Name: Category, dtype: int64
 ```
-
+Ahora visualicemos el número de categorías en el conjunto de datos:
+```
+import seaborn as sns
+plt.figure(figsize=(15,15))
+plt.xticks(rotation=90)
+sns.countplot(y="Category", data=resumeDataSet)
+```
+![This is an image](https://github.com/javierma73/Screening-with-Python/blob/main/resume-2.JPG)
