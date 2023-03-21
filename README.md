@@ -98,3 +98,4 @@ plt.subplot(the_grid[0, 1], aspect=1, title='CATEGORY DISTRIBUTION')
 source_pie = plt.pie(targetCounts, labels=targetLabels, autopct='%1.1f%%', shadow=True, colors=colors)
 plt.show()
 ```
+resume-distribution ![This is an image](https://github.com/javierma73/Screening-with-Python/blob/main/resume-distribution.png)
