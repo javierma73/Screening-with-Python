@@ -99,3 +99,51 @@ source_pie = plt.pie(targetCounts, labels=targetLabels, autopct='%1.1f%%', shado
 plt.show()
 ```
 resume-distribution ![This is an image](https://github.com/javierma73/Screening-with-Python/blob/main/resume-distribution.png)
+## Ahora crearé una función de ayuda para eliminar las URL, los hashtags, las menciones, las letras especiales y los signos de puntuación:
+```
+import re
+def cleanResume(resumeText):
+    resumeText = re.sub('http\S+\s*', ' ', resumeText)  # remove URLs
+    resumeText = re.sub('RT|cc', ' ', resumeText)  # remove RT and cc
+    resumeText = re.sub('#\S+', '', resumeText)  # remove hashtags
+    resumeText = re.sub('@\S+', '  ', resumeText)  # remove mentions
+    resumeText = re.sub('[%s]' % re.escape("""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""), ' ', resumeText)  # remove punctuations
+    resumeText = re.sub(r'[^\x00-\x7f]',r' ', resumeText) 
+    resumeText = re.sub('\s+', ' ', resumeText)  # remove extra whitespace
+    return resumeText
+    
+resumeDataSet['cleaned_resume'] = resumeDataSet.Resume.apply(lambda x: cleanResume(x))
+```
+### Ahora que hemos borrado el conjunto de datos, la siguiente tarea es echar un vistazo a Wordcloud. Una nube de palabras representa la mayor cantidad de palabras más grandes y viceversa:
+```
+import nltk
+from nltk.corpus import stopwords
+import string
+from wordcloud import WordCloud
+
+oneSetOfStopWords = set(stopwords.words('english')+['``',"''"])
+totalWords =[]
+Sentences = resumeDataSet['Resume'].values
+cleanedSentences = ""
+for i in range(0,160):
+    cleanedText = cleanResume(Sentences[i])
+    cleanedSentences += cleanedText
+    requiredWords = nltk.word_tokenize(cleanedText)
+    for word in requiredWords:
+        if word not in oneSetOfStopWords and word not in string.punctuation:
+            totalWords.append(word)
+    
+wordfreqdist = nltk.FreqDist(totalWords)
+mostcommon = wordfreqdist.most_common(50)
+print(mostcommon)
+
+wc = WordCloud().generate(cleanedSentences)
+plt.figure(figsize=(15,15))
+plt.imshow(wc, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+```
+
+```
+[('Detalles', 484), ('Experiencia', 446), ('meses', 376), ('empresa', 330), ('descripción', 310), ('1', 290), ( 'año', 232), ('Enero', 216), ('Menos', 204), ('Datos', 200), ('datos', 192), ('Habilidad', 166), ('Maharashtra ', 166), ('6', 164), ('Python', 156), ('Science', 154), ('I', 146), ('Education', 142), ('College', 140), ('The', 126), ('project', 126), ('like', 126), ('Project', 124), ('Learning', 116), ('India', 114) , ('Máquina', 112), ('Universidad', 112), ('Web', 106), ('usando', 104), ('monthsCompany', 102), ('B', 98), ( 'C', 98), ('SQL', 96), ('tiempo', 92), ('aprendizaje', 90),('Mumbai', 90), ('Pune', 90), ('Artes', 90), ('A', 84), ('aplicación', 84), ('Ingeniería', 78), (' 24', 76), ('varios', 76), ('Software', 76), ('Responsabilidades', 76), ('Nagpur', 76), ('desarrollo', 74), ('Gestión' , 74), ('proyectos', 74), ('Tecnologías', 72)]
+```
